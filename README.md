@@ -1,2 +1,2 @@
-# hospitality-rag-retrieval-eval
+# 🧪 Hospitality RAG Retrieval Eval
 A Python RAG evaluation framework for hospitality chatbots that logs real interactions to compare retrieval strategies.
