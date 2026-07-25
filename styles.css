@@ -4,7 +4,7 @@
 
 .gradio-container {
     width: 50vw;
-    max-width: 900px !important;
+    max-width: 1000px !important;
     min-width: 350px !important;
     margin: auto;
     padding: var(--element-padding);
@@ -16,6 +16,7 @@ footer {
 
 h1 {
     text-align: center;
+    margin-top: 5px;
 }
 
 #intro {
@@ -29,6 +30,13 @@ h1 {
 
 #answer {
     min-height: 220px;
+}
+
+.logo {
+    display: block;
+    margin: 0 auto;
+    width: 187.5px;
+    height: auto;
 }
 
 button {
