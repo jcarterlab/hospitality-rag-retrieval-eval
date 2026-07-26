@@ -2,6 +2,10 @@ from pathlib import Path
 import gradio as gr
 from chatbot import chatbot
 
+gr.set_static_paths(
+    paths=["."]
+)
+
 # -------------------------
 # CSS styles
 # -------------------------
@@ -12,19 +16,52 @@ css = Path("styles.css").read_text()
 # Gradio UI
 # -------------------------
 
-theme = gr.themes.Soft(
-    primary_hue="blue",
-    neutral_hue="slate",
+theme = (
+    gr.themes.Soft(
+        primary_hue="blue",
+        neutral_hue="slate",
+    )
+    .set(
+        body_background_fill="#0f172a",
+        body_background_fill_dark="#0f172a",
+
+        block_background_fill="#1e293b",
+        block_background_fill_dark="#1e293b",
+
+        input_background_fill="#1e293b",
+        input_background_fill_dark="#1e293b",
+
+        body_text_color="#f8fafc",
+        body_text_color_dark="#f8fafc",
+
+        block_border_color="#334155",
+        block_border_color_dark="#334155",
+
+        button_secondary_background_fill="#f8fafc",
+        button_secondary_background_fill_hover="#e2e8f0",
+        button_secondary_border_color="#f8fafc",
+        button_secondary_text_color="#0f172a",
+    )
 )
 
 with gr.Blocks(
     title="Saint James Backpackers Assistant",
 ) as demo:
 
+    gr.HTML(
+    '''
+    <img 
+        class="logo"
+        width="100"
+        height="100"
+        src="/gradio_api/file=Logo.png"
+    >
+    ''',
+    elem_id="logo-container",
+)
+
     gr.Markdown(
         """
-<img class="logo" src="https://huggingface.co/spaces/SJ-1989/ChatSJB/resolve/main/Logo.png">
-
 #### Hi, my name's Jack 👋
 #### I'm your virtual assistant!
 """,
@@ -34,7 +71,6 @@ with gr.Blocks(
     gr.Markdown(
         """
 I can help you with:
-
 - 🛎️ Our services
 - 📋 House rules
 - 📍 Travel directions
@@ -43,39 +79,31 @@ I can help you with:
     )
 
     question = gr.Textbox(
-        label="Your Question",
-        placeholder="What time is breakfast?",
+        label=None,
+        show_label=False,
+        placeholder="Your question...",
         lines=1,
-        render=False,
     )
+
+    with gr.Row():
+        ask_button = gr.Button(
+            "Ask",
+            variant="primary",
+        )
+
+        clear_button = gr.Button(
+            "Clear",
+            elem_id="clear-button",
+        )
 
     answer = gr.Markdown(
         label="Answer",
         elem_id="answer",
-        render=False,
     )
 
-    gr.Examples(
-        examples=[
-            "Do you have towels? 🚿",
-            "When does the kitchen close? 🍴",
-            "How do I get to Heathrow? ✈️"
-        ],
-        inputs=question,
-        outputs=answer,
-        fn=chatbot,
-        cache_examples=False,
-        run_on_click=True,
-        label="Examples",
-    )
-
-    question.render()
-
-    with gr.Row():
-        ask_button = gr.Button("Ask", variant="primary")
-        clear_button = gr.Button("Clear")
-
-    answer.render()
+    # -------------------------
+    # Events
+    # -------------------------
 
     ask_button.click(
         fn=chatbot,
@@ -99,4 +127,7 @@ I can help you with:
 # -------------------------
 
 if __name__ == "__main__":
-    demo.launch(theme=theme, css=css)
+    demo.launch(
+        theme=theme,
+        css=css,
+    )
