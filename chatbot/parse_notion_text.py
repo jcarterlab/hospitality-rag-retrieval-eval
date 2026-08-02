@@ -1,4 +1,6 @@
-def is_heading(block, block_type):
+from typing import Any
+
+def is_heading(block: dict[str, Any], block_type: str) -> bool:
 
     headings = [
         'heading_1',
@@ -36,7 +38,7 @@ def is_heading(block, block_type):
     return False
 
 
-def parse_notion_text(data):
+def parse_notion_text(blocks: list[dict]) -> list[dict[str, str]]:
 
     current_topic = ''
     last_topic = ''
@@ -45,13 +47,13 @@ def parse_notion_text(data):
     started = False
     chunks = []
 
-    for block in data.get('results', []):
+    for block in blocks:
 
         block_type = block.get('type')
 
         if is_heading(block, block_type):
 
-            if current_text:
+            if current_text.strip():
                 chunks.append({
                     'topic': current_topic.strip(),
                     'text': current_text.strip()
@@ -91,19 +93,20 @@ def parse_notion_text(data):
             )
 
             if len(text.split()) <= 0:
-                pass
+                continue
 
             if not current_text:
                 current_text = text.strip()
             else:
-                current_text = current_text.strip() + ' ' + text.strip()
+                current_text = current_text.strip() + '\n\n' + text.strip()
 
-    chunks.append({
-        'topic': current_topic.strip(),
-        'text': current_text.strip()
-    })
+    if current_text.strip():
+        chunks.append({
+            'topic': current_topic.strip(),
+            'text': current_text.strip()
+        })
 
-    return chunks
+        return chunks
 
     
 

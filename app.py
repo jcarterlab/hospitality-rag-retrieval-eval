@@ -1,10 +1,31 @@
+import logging
 from pathlib import Path
 import gradio as gr
-from chatbot import chatbot
+from chatbot.chatbot import chatbot
 
 gr.set_static_paths(
     paths=["."]
 )
+
+# -------------------------
+# Logging
+# -------------------------
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+for logger_name in [
+    'httpx',
+    'httpcore',
+    'urllib3',
+    'google_genai.models',
+    'gradio',
+    'huggingface_hub',
+]:
+    logging.getLogger(logger_name).setLevel(logging.ERROR)
 
 # -------------------------
 # CSS styles
@@ -100,10 +121,6 @@ I can help you with:
         label="Answer",
         elem_id="answer",
     )
-
-    # -------------------------
-    # Events
-    # -------------------------
 
     ask_button.click(
         fn=chatbot,
