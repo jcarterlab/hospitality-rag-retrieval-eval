@@ -100,7 +100,7 @@ def get_best_k_chunks(
     best = scores.argsort()[::-1][:config.CHUNKS_USED]
 
     logger.info(
-        'top_hit=%s', 
+        'top_chunk=%s',
         documents[best[0]].split('Topic:')[1].split('\n\n')[0].strip()
     )
 
@@ -139,7 +139,7 @@ def generate_llm_response(query: str, context: str) -> str:
         return ''
 
 
-def chatbot(query: str) -> str:
+def chatbot(query: str, session_id: str) -> str:
     """
     Processes a user query by retrieving relevant context using the
     configured retrieval method and, if enabled, generates a response
@@ -156,7 +156,11 @@ def chatbot(query: str) -> str:
     else:
         retrieval_method = config.RETRIEVAL_METHOD
 
-    logger.info('query=%s', query)
+    logger.info(
+        'session_id=%s query=%s', 
+        session_id, 
+        query
+    )
     logger.info(
         'settings=[ai:%s, retrieval:%s]', 
         config.USE_AI, 
@@ -168,7 +172,11 @@ def chatbot(query: str) -> str:
             get_tfidf_scores(query),
             human_readable=True
         )
-        logger.info('response=%s', response.split('Topic:')[1].split('\n\n')[0].strip())
+        logger.info(
+            'session_id=%s response=%s', 
+            session_id, 
+            response.split('Topic:')[1].split('\n\n')[0].strip()
+        )
         return response
 
     if not config.USE_AI:
@@ -181,7 +189,11 @@ def chatbot(query: str) -> str:
         response = generate_llm_response(query, context)
 
         if response:
-            logger.info('response=%s', response)
+            logger.info(
+                'session_id=%s response=%s', 
+                session_id,
+                response
+            )
             return response
         else:
             return fallback_response()
@@ -193,7 +205,11 @@ def chatbot(query: str) -> str:
         response = generate_llm_response(query, context)
 
         if response:
-            logger.info('response=%s', response)
+            logger.info(
+                'session_id=%s response=%s', 
+                session_id,
+                response
+            )
             return response
         else:
             return fallback_response()

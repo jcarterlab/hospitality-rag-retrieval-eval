@@ -1,10 +1,11 @@
 import logging
 from pathlib import Path
+import uuid
 import gradio as gr
 from chatbot.chatbot import chatbot
 
 gr.set_static_paths(
-    paths=["."]
+    paths=['.']
 )
 
 # -------------------------
@@ -69,6 +70,10 @@ with gr.Blocks(
     title="Saint James Backpackers Assistant",
 ) as demo:
 
+    session_id = gr.State(
+        str(uuid.uuid4())
+    )
+
     gr.HTML(
     '''
     <img 
@@ -124,13 +129,13 @@ I can help you with:
 
     ask_button.click(
         fn=chatbot,
-        inputs=question,
+        inputs=[question, session_id],
         outputs=answer,
     )
 
     question.submit(
         fn=chatbot,
-        inputs=question,
+        inputs=[question, session_id],
         outputs=answer,
     )
 
