@@ -2,7 +2,9 @@ import logging
 from pathlib import Path
 import uuid
 import gradio as gr
-from chatbot.chatbot import chatbot
+from chatbot.chatbot_with_storage import chatbot_with_storage
+from database.save_query import save_query
+
 
 gr.set_static_paths(
     paths=['.']
@@ -46,19 +48,14 @@ theme = (
     .set(
         body_background_fill="#0f172a",
         body_background_fill_dark="#0f172a",
-
         block_background_fill="#1e293b",
         block_background_fill_dark="#1e293b",
-
         input_background_fill="#1e293b",
         input_background_fill_dark="#1e293b",
-
         body_text_color="#f8fafc",
         body_text_color_dark="#f8fafc",
-
         block_border_color="#334155",
         block_border_color_dark="#334155",
-
         button_secondary_background_fill="#f8fafc",
         button_secondary_background_fill_hover="#e2e8f0",
         button_secondary_border_color="#f8fafc",
@@ -104,7 +101,7 @@ I can help you with:
         elem_id="explanation",
     )
 
-    question = gr.Textbox(
+    query = gr.Textbox(
         label=None,
         show_label=False,
         placeholder="Your question...",
@@ -128,20 +125,20 @@ I can help you with:
     )
 
     ask_button.click(
-        fn=chatbot,
-        inputs=[question, session_id],
+        fn=chatbot_with_storage,
+        inputs=[query, session_id],
         outputs=answer,
     )
 
-    question.submit(
-        fn=chatbot,
-        inputs=[question, session_id],
+    query.submit(
+        fn=chatbot_with_storage,
+        inputs=[query, session_id],
         outputs=answer,
     )
 
     clear_button.click(
         lambda: ("", ""),
-        outputs=[question, answer],
+        outputs=[query, answer],
     )
 
 # -------------------------

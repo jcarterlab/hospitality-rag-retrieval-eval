@@ -1,4 +1,5 @@
 import logging
+from typing import Tuple
 from numpy.typing import NDArray
 
 import numpy as np
@@ -139,7 +140,7 @@ def generate_llm_response(query: str, context: str) -> str:
         return ''
 
 
-def chatbot(query: str, session_id: str) -> str:
+def chatbot(query: str, session_id: str) -> tuple[str, str]:
     """
     Processes a user query by retrieving relevant context using the
     configured retrieval method and, if enabled, generates a response
@@ -177,7 +178,7 @@ def chatbot(query: str, session_id: str) -> str:
             session_id, 
             response.split('Topic:')[1].split('\n\n')[0].strip()
         )
-        return response
+        return response, 'fallback'
 
     if not config.USE_AI:
         return fallback_response()
@@ -194,7 +195,7 @@ def chatbot(query: str, session_id: str) -> str:
                 session_id,
                 response
             )
-            return response
+            return response, 'dense_embeddings'
         else:
             return fallback_response()
         
@@ -210,7 +211,7 @@ def chatbot(query: str, session_id: str) -> str:
                 session_id,
                 response
             )
-            return response
+            return response, 'hybrid'
         else:
             return fallback_response()
 
@@ -221,6 +222,6 @@ def chatbot(query: str, session_id: str) -> str:
         response = generate_llm_response(query, context)
 
         if response:
-            return response
+            return response, 'tfidf'
         else:
             return fallback_response()
