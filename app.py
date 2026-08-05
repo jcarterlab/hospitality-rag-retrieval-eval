@@ -3,8 +3,6 @@ from pathlib import Path
 import uuid
 import gradio as gr
 from chatbot.chatbot_with_storage import chatbot_with_storage
-from database.save_query import save_query
-
 
 gr.set_static_paths(
     paths=['.']
