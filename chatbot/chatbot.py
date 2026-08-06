@@ -174,8 +174,8 @@ def chatbot(query: str, session_id: str) -> tuple[str, str]:
             human_readable=True
         )
         logger.info(
-            'session_id=%s response=%s', 
-            session_id, 
+            'response_type=%s response=%s', 
+            'fallback', 
             response.split('Topic:')[1].split('\n\n')[0].strip()
         )
         return response, 'fallback'
@@ -191,8 +191,8 @@ def chatbot(query: str, session_id: str) -> tuple[str, str]:
 
         if response:
             logger.info(
-                'session_id=%s response=%s', 
-                session_id,
+                'response_type=%s response=%s', 
+                'dense_embeddings',
                 response
             )
             return response, 'dense_embeddings'
@@ -207,8 +207,8 @@ def chatbot(query: str, session_id: str) -> tuple[str, str]:
 
         if response:
             logger.info(
-                'session_id=%s response=%s', 
-                session_id,
+                'response_type=%s response=%s', 
+                'hybrid',
                 response
             )
             return response, 'hybrid'
@@ -222,6 +222,11 @@ def chatbot(query: str, session_id: str) -> tuple[str, str]:
         response = generate_llm_response(query, context)
 
         if response:
+            logger.info(
+                'response_type=%s response=%s', 
+                'tfidf',
+                response
+            )
             return response, 'tfidf'
         else:
             return fallback_response()
